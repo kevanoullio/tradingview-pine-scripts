@@ -7,7 +7,7 @@
 // The 2 Pole Smoother is described as being a better approximation of price, whereas the 3 Pole Smoother has superior smoothing.
 // Special thanks to Alex Orekhov (everget) for their excellent open source code for both two and three pole!
 
-// @description Provides the functions to calculate Double and Triple Exponentional Moving Averages (DEMA & TEMA)
+// @description Provides the functions to calculate 2 Pole & 3 Pole Ehlers Super Smoother Filters
 library("Ehlers_Super_Smoother", true)
 
 // @function Calculates 2 Pole Ehlers Super Smoother Filter
