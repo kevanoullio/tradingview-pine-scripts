@@ -1,0 +1,71 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © KevanoTrades
+
+//@version=5
+
+// The 2 Pole and 3 Pole Super Smoother Filters were developed by John Ehlers and described in "Chapter 13: Super Smother" of his book "Cybernetic Analysis for Stocks and Futures".
+// The 2 Pole Smoother is described as being a better approximation of price, whereas the 3 Pole Smoother has superior smoothing.
+// Special thanks to Alex Orekhov (everget) for their excellent open source code for both two and three pole!
+
+// @description Provides the functions to calculate 2 Pole & 3 Pole Ehlers Super Smoother Filters
+library("Ehlers_Super_Smoother", true)
+
+// @function Calculates 2 Pole Ehlers Super Smoother Filter
+// @param _source -> Open, Close, High, Low, etc ('close' is used if no argument is supplied)
+// @param _length -> Ehlers Super Smoother length
+// @returns 2 Pole Ehlers Super Smoothing to an input source at the specified input length
+export twoPole(float _source = close, simple int _length) =>
+
+    float PI = 2 * math.asin(1) // 3.14159265 
+    float arg = math.sqrt(2) * PI / _length
+    
+    float a1 = math.exp(-arg)
+    float b1 = 2 * a1 * math.cos(arg)
+    
+    float coef3 = -math.pow(a1, 2)
+    float coef2 = b1
+    float coef1 = 1 - coef2 - coef3
+    
+    float SSF = na
+    
+    float sourceReplace1 = nz(_source[1], _source)
+    float sourceReplace2 = nz(_source[2], sourceReplace1)
+    
+    SSF := (coef1 * (_source + sourceReplace1) / 2)
+         + (coef2 * nz(SSF[1], sourceReplace1))
+         + (coef3 * nz(SSF[2], sourceReplace2))
+
+
+// @function Calculates 3 Pole Ehlers Super Smoother Filter
+// @param _source -> Open, Close, High, Low, etc ('close' is used if no argument is supplied)
+// @param _length -> Ehlers Super Smoother length
+// @returns 3 Pole Ehlers Super Smoothing to an input source at the specified input length
+export threePole(float _source = close, simple int _length) =>
+    
+    float PI = 2 * math.asin(1) // 3.14159265 
+    float arg = 1.738 * PI / _length
+    
+    float a1 = math.exp(-arg)
+    float b1 = 2 * a1 * math.cos(arg)
+    float c1 = math.pow(a1, 2)
+    
+    float coef4 = math.pow(c1, 2)
+    float coef3 = -(c1 + b1 * c1)
+    float coef2 = b1 + c1
+    float coef1 = 1 - coef2 - coef3 - coef4
+    
+    float SSF = na
+    
+    float sourceReplace1 = nz(_source[1], _source)
+    float sourceReplace2 = nz(_source[2], sourceReplace1)
+    float sourceReplace3 = nz(_source[2], sourceReplace2)
+    
+    SSF := (coef1 * (_source + sourceReplace1) / 2)
+         + (coef2 * nz(SSF[1], sourceReplace1))
+         + (coef3 * nz(SSF[2], sourceReplace2))
+         + (coef4 * nz(SSF[3], sourceReplace3))
+
+
+// plot demo
+plot(twoPole(close, 50), title="Ehlers Super Smoother Filter - 2 Pole", color=color.yellow)
+plot(threePole(close, 50), title="Ehlers Super Smoother Filter - 3 Pole", color=color.aqua)
