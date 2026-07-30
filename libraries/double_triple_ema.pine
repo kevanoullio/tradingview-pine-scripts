@@ -1,0 +1,40 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © KevanoTrades
+
+//@version=5
+
+// @description Provides the functions to calculate Double and Triple Exponentional Moving Averages (DEMA & TEMA).
+library("Double_Triple_EMA", true)
+
+// @function Calculates Double Exponentional Moving Averages (DEMA)
+// @param _source -> Open, Close, High, Low, etc ('close' is used if no argument is supplied)
+// @param _length -> DEMA length
+// @returns Double Exponential Moving Average (DEMA) of an input source at the specified input length
+export dema(float _source = close, simple int _length) =>
+
+	float e1 = ta.ema(_source, _length)
+    float e2 = ta.ema(e1, _length)
+    
+    float DEMA = (2 * e1) - e2
+    
+    DEMA
+
+
+// @function Calculates Triple Exponentional Moving Averages (TEMA)
+// @param _source -> Open, Close, High, Low, etc ('close' is used if no argument is supplied)
+// @param _length -> TEMA length
+// @returns Triple Exponential Moving Average (TEMA) of an input source at the specified input length
+export tema(float _source = close, simple int _length) =>
+    
+    float e1 = ta.ema(_source, _length)
+    float e2 = ta.ema(e1, _length)
+    float e3 = ta.ema(e2, _length)
+    
+    float TEMA = (3 * e1) - (3 * e2) + e3
+    
+    TEMA
+
+
+// plot demo
+plot(dema(close, 100), title="Double Exponential Moving Average", color=color.yellow)
+plot(tema(close, 100), title="Triple Exponential Moving Average", color=color.aqua)
