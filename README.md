@@ -11,18 +11,27 @@ A modular, open-source collection of custom indicators, backtesting strategies, 
 
 ## 📂 Repository Structure
 
-Each script lives as a **single, self-contained `.pine` file** inside its respective category directory. Documentation, parameter details, and version release notes are embedded directly within each file's header comments.
+Each script lives in its own dedicated subfolder within its respective category directory. Each subfolder contains the source code, documentation, and a visual example.
 
 ```text
 tradingview-pine-scripts/
 ├── indicators/         # Custom indicators & signal overlays
-│   |── rsi_divergence.pine
+│   |── moving_average_convergence_divergence/
+│   |   |── moving_average_convergence_divergence.pine
+│   |   |── moving_average_convergence_divergence.md
+│   |   |── moving_average_convergence_divergence.png
 │   └── *.pine
 ├── strategies/         # Quantitative backtesting strategies
-│   |── mean_reversion.pine
+│   |── relative_strength_index_strategy/
+│   |   |── relative_strength_index_strategy.pine
+│   |   |── relative_strength_index_strategy.md
+│   |   |── relative_strength_index_strategy.png
 │   └── *.pine
 ├── libraries/          # Reusable Pine modules for public import
-│   |── double_triple_ema.pine
+│   |── ehlers_super_smoother/
+│   |   |── ehlers_super_smoother.pine
+│   |   |── ehlers_super_smoother.md
+│   |   |── ehlers_super_smoother.png
 │   └── *.pine
 ├── LICENSE             # Mozilla Public License 2.0
 └── README.md           # Repository index and contributor workflow
@@ -32,11 +41,13 @@ tradingview-pine-scripts/
 
 ### 1. Indicators & Strategies
 
-1. Navigate to the `indicators/` or `strategies/` directory.
-2. Open the desired `.pine` file and copy the raw source code.
+1. Navigate to the `indicators/` or `strategies/` directory and enter the desired script's subfolder.
+2. Open the `.pine` file and copy the raw source code.
 3. Open **TradingView** in your browser or desktop app.
 4. Click on the **Pine Editor** tab at the bottom of the chart.
 5. Paste the code into the editor and click **Add to Chart**.
+6. Refer to the `.md` file in the script's folder for detailed usage instructions and parameter descriptions.
+7. View the `.png` file in the same folder for a visual example of the script in action.
 
 ### 2. Importing Libraries
 
@@ -59,7 +70,7 @@ This monorepo uses a **Single-File + Script-Scoped Tagging** strategy that maps 
 
 ### 1. Embedded Documentation & Revisions
 
-Rather than maintaining external `.md` files or changelogs for every script, all documentation and revision history live inside the `.pine` file header using Pine Script compiler annotations (`//@description`, `//@function`, `//@param`).
+While header comments remain for TradingView's parser (using `//@description`, `//@function`, `//@param`), the primary documentation, detailed parameter descriptions, and revision history now reside in the accompanying `.md` file within each script's subfolder.
 
 TradingView automatically parses these tags when you copy/paste the code into the Pine Editor to pre-fill public publication pages.
 
@@ -95,7 +106,12 @@ Since every script in this repository has its own independent lifecycle on Tradi
 
 Instead, tags are scoped to the **script name** and the **TradingView published integer version** (`/1`, `/2`, `/3`):
 
-$$\text{Format: } \texttt{<script-name>-v<tradingview-version>}$$
+$$\text{Format: } \texttt{<prefix>-<script-name>-v<tradingview-version>}$$
+
+**Tagging Prefix Summary:**
+- `ind-`: Indicators
+- `str-`: Strategies
+- `lib-`: Libraries
 
 #### Example Workflow when Publishing an Update
 
@@ -105,15 +121,15 @@ $$\text{Format: } \texttt{<script-name>-v<tradingview-version>}$$
 
 ```bash
 # 1. Commit the code change to main
-git add libraries/double_triple_ema.pine
-git commit -m "feat(ema): add TEMA support for TradingView v2"
+git add libraries/ehlers_super_smoother/ehlers_super_smoother.pine
+git commit -m "Update ehlers_super_smoother library for TradingView v2 (#v2)"
 
-# 2. Tag using the script name and TV version number
-git tag double-triple-ema-v2
+# 2. Tag using the prefixed script name and TV version number
+git tag lib-ehlers_super_smoother-v2
 
 # 3. Push to GitHub
 git push origin main
-git push origin double-triple-ema-v2
+git push origin lib-ehlers_super_smoother-v2
 
 ```
 
@@ -123,10 +139,10 @@ To check out or diff the code as it existed when TradingView Version 1 was publi
 
 ```bash
 # Inspect Version 1
-git checkout double-triple-ema-v1
+git checkout lib-double-triple-ema-v1
 
 # Compare changes between Version 1 and Version 2 on TV
-git diff double-triple-ema-v1 double-triple-ema-v2 libraries/double_triple_ema.pine
+git diff lib-ehlers_super_smoother-v1 lib-ehlers_super_smoother-v2 libraries/ehlers_super_smoother/ehlers_super_smoother.pine
 
 ```
 
